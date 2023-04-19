@@ -4,9 +4,19 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
+
 import javax.swing.JTextField;
 import java.awt.Color;
 import com.toedter.calendar.JDateChooser;
+
+import controller.HuespedController;
+import controller.ReservaController;
+import modelo.Huesped;
+import modelo.Reserva;
+
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
@@ -19,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.sql.Date;
 import java.text.Format;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
@@ -32,12 +43,15 @@ public class RegistroHuesped extends JFrame {
 	private JTextField txtNombre;
 	private JTextField txtApellido;
 	private JTextField txtTelefono;
-	private JTextField txtNreserva;
+	//private JTextField txtNreserva;
 	private JDateChooser txtFechaN;
 	private JComboBox<Format> txtNacionalidad;
 	private JLabel labelExit;
 	private JLabel labelAtras;
 	int xMouse, yMouse;
+	private Reserva reservacion;
+	HuespedController huespedController = new HuespedController();
+	ReservaController reservaController = new ReservaController();
 
 	/**
 	 * Launch the application.
@@ -59,7 +73,6 @@ public class RegistroHuesped extends JFrame {
 	 * Create the frame.
 	 */
 	public RegistroHuesped() {
-		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegistroHuesped.class.getResource("/imagenes/lOGO-50PX.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 910, 634);
@@ -198,7 +211,7 @@ public class RegistroHuesped extends JFrame {
 		lblTitulo.setFont(new Font("Roboto Black", Font.PLAIN, 23));
 		contentPane.add(lblTitulo);
 		
-		JLabel lblNumeroReserva = new JLabel("NÚMERO DE RESERVA");
+		/*JLabel lblNumeroReserva = new JLabel("NÚMERO DE RESERVA");
 		lblNumeroReserva.setBounds(560, 474, 253, 14);
 		lblNumeroReserva.setForeground(SystemColor.textInactiveText);
 		lblNumeroReserva.setFont(new Font("Roboto Black", Font.PLAIN, 18));
@@ -210,7 +223,7 @@ public class RegistroHuesped extends JFrame {
 		txtNreserva.setColumns(10);
 		txtNreserva.setBackground(Color.WHITE);
 		txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-		contentPane.add(txtNreserva);
+		contentPane.add(txtNreserva);*/
 		
 		JSeparator separator_1_2 = new JSeparator();
 		separator_1_2.setBounds(560, 170, 289, 2);
@@ -246,13 +259,19 @@ public class RegistroHuesped extends JFrame {
 		separator_1_2_5.setBounds(560, 529, 289, 2);
 		separator_1_2_5.setForeground(new Color(12, 138, 199));
 		separator_1_2_5.setBackground(new Color(12, 138, 199));
-		contentPane.add(separator_1_2_5);
+		//contentPane.add(separator_1_2_5);
 		
 		JPanel btnguardar = new JPanel();
 		btnguardar.setBounds(723, 560, 122, 35);
 		btnguardar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				huespedController.guardar(getRegistroHuesped(), reservacion);
+				JOptionPane.showMessageDialog(null, "Reservación y huesped guardados correctamente.");
+				MenuUsuario usuario = new MenuUsuario();
+				usuario.setVisible(true);
+				dispose();
+
 			}
 		});
 		btnguardar.setLayout(null);
@@ -265,6 +284,10 @@ public class RegistroHuesped extends JFrame {
 		labelGuardar.setForeground(Color.WHITE);
 		labelGuardar.setFont(new Font("Roboto", Font.PLAIN, 18));
 		labelGuardar.setBounds(0, 0, 122, 35);
+		FontIcon iconSave = FontIcon.of(FontAwesomeSolid.SAVE);
+		iconSave.setIconSize(20);
+		iconSave.setIconColor(Color.WHITE);
+		labelGuardar.setIcon(iconSave);
 		btnguardar.add(labelGuardar);
 		
 		JPanel panel = new JPanel();
@@ -317,15 +340,30 @@ public class RegistroHuesped extends JFrame {
 	
 	
 	//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"	
-	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
-	        xMouse = evt.getX();
-	        yMouse = evt.getY();
-	    }
+	private void headerMousePressed(java.awt.event.MouseEvent evt) {
+        xMouse = evt.getX();
+        yMouse = evt.getY();
+	}
 
-	    private void headerMouseDragged(java.awt.event.MouseEvent evt) {
-	        int x = evt.getXOnScreen();
-	        int y = evt.getYOnScreen();
-	        this.setLocation(x - xMouse, y - yMouse);
-}
-											
+    private void headerMouseDragged(java.awt.event.MouseEvent evt) {
+        int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        this.setLocation(x - xMouse, y - yMouse);
+    }
+    
+    public void setReservacion(Reserva reserva)
+    {
+    	this.reservacion = reserva;
+    }
+    
+    private Huesped getRegistroHuesped()
+    {
+    	Huesped huesped = new Huesped();
+    	huesped.setNombre(txtNombre.getText());
+    	huesped.setApellido(txtApellido.getText());
+    	huesped.setFecha_nacimiento(new Date(txtFechaN.getDate().getTime()));
+    	huesped.setNacionalidad(txtNacionalidad.getSelectedItem().toString());
+    	huesped.setTelefono(txtTelefono.getText());
+    	return huesped;
+    }
 }
