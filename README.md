@@ -1,6 +1,5 @@
 # Challenge ONE | Java | Back-end | Hotel Alura
-<p align="center" >
-     ![hotel-alura](https://user-images.githubusercontent.com/1028338/233246926-f68e2240-62d3-43ce-a486-f4e603bd5081.gif)     
+<p align="center" > 
      <img width="300" heigth="300" src="https://user-images.githubusercontent.com/1028338/233246926-f68e2240-62d3-43ce-a486-f4e603bd5081.gif">
 </p>
 
